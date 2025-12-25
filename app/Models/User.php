@@ -6,6 +6,7 @@ namespace App\Models;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -23,6 +24,7 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'role,'
     ];
 
     /**
@@ -45,6 +47,7 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => 'string',
         ];
     }
 
@@ -62,5 +65,30 @@ class User extends Authenticatable implements FilamentUser
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function carts(): HasMany
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    public function getCartTotalAttribute(): int
+    {
+        return $this->carts->sum('subtotal');
+    }
+
+    public function getFormattedCartTotalAttribute(): string
+    {
+        return 'Rp ' . number_format($this->cart_total, 0, ',', '.');
+    }
+
+    public function getCartCountAttribute(): int
+    {
+        return $this->carts->sum('quantity');
+    }
+
+    public function getCartWeightAttribute(): int
+    {
+        return $this->carts->sum('total_weight');
     }
 }
