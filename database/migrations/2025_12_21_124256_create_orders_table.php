@@ -6,40 +6,53 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-
-            $table->string('order_code')->unique();
-
-            $table->string('name');
-            $table->string('phone', 20);
-            $table->text('address');
-            $table->string('city');
-            $table->string('post_code');
-
-            $table->unsignedBigInteger('total_price');
-            $table->unsignedBigInteger('discount_amount')->default(0);
-
-            $table->enum('status', ['pending', 'paid', 'failed'])->default('pending');
-
-            $table->string('snap_token')->nullable();
-
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-
-            $table->foreignId('promo_id')->nullable()->constrained('promos')->nullOnDelete();
-
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('order_number')->unique();
+            $table->enum('status', ['pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled'])->default('pending');
+            
+            // ============ PRICING ============
+            $table->decimal('subtotal', 12, 2);
+            $table->decimal('shipping_cost', 10, 2)->default(0);
+            $table->decimal('discount_amount', 10, 2)->default(0); 
+            $table->decimal('total_amount', 12, 2);
+            $table->decimal('total_weight', 10, 2)->default(0);
+            
+            // ============ COUPON ============
+            $table->foreignId('coupon_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('coupon_code')->nullable();
+            
+            // ============ PAYMENT MANUAL ============
+            $table->string('payment_method')->nullable();
+            $table->enum('payment_status', ['unpaid', 'pending', 'paid', 'rejected'])->default('unpaid');
+            $table->string('payment_proof')->nullable();
+            $table->text('payment_notes')->nullable();
+            
+            // ============ SHIPPING INFO ============
+            $table->string('shipping_name');
+            $table->string('shipping_phone');
+            $table->text('shipping_address');
+            $table->string('shipping_city');
+            $table->string('shipping_province')->nullable();
+            $table->string('shipping_postal_code');
+            
+            // ============ COURIER ============
+            $table->string('courier')->nullable();
+            $table->string('courier_service')->nullable();
+            $table->string('tracking_number')->nullable();
+            
+            // ============ NOTES & TIMESTAMPS ============
+            $table->text('notes')->nullable();                     
+            $table->timestamp('paid_at')->nullable();
+            $table->timestamp('shipped_at')->nullable();
+            $table->timestamp('delivered_at')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('orders');

@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class OrderItem extends Model
 {
@@ -12,26 +12,33 @@ class OrderItem extends Model
     protected $fillable = [
         'order_id',
         'product_id',
+        'product_name',
         'quantity',
         'price',
+        'weight',
         'subtotal',
     ];
 
     protected $casts = [
-        'quantity' => 'integer',
-        'price' => 'integer',
-        'subtotal' => 'integer',
+        'price' => 'decimal:2',
+        'weight' => 'decimal:2',
+        'subtotal' => 'decimal:2',
     ];
 
-    // item milik satu order
+    // ============ RELASI ============
     public function order()
     {
         return $this->belongsTo(Order::class);
     }
 
-    // item mengacu ke satu produk
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    // ============ ACCESSORS ============
+    public function getTotalWeightAttribute(): float
+    {
+        return $this->weight * $this->quantity;
     }
 }
