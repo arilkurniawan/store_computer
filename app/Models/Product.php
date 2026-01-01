@@ -3,33 +3,28 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Builder;
 
 class Product extends Model
 {
     protected $fillable = [
-        'name',
-        'slug',
-        'description',
-        'price',
-        'stock',
-        'weight',
-        'image',
-        'sold_count',
+        'category_id', 
+        'name', 
+        'slug', 
+        'description', 
+        'price', 
+        'stock', 
         'is_recommended',
-        'is_active',
-        'category_id',
+        'image', 
+        'is_active'
     ];
 
     protected $casts = [
         'price' => 'integer',
         'stock' => 'integer',
-        'weight' => 'integer',
-        'sold_count' => 'integer',
-        'is_recommended' => 'boolean',
         'is_active' => 'boolean',
+        'is_recommended' => 'boolean',
     ];
 
     protected static function boot()
@@ -41,50 +36,38 @@ class Product extends Model
                 $product->slug = Str::slug($product->name);
             }
         });
+
+        static::updating(function ($product) {
+            if ($product->isDirty('name') && !$product->isDirty('slug')) {
+                $product->slug = Str::slug($product->name);
+            }
+        });
     }
 
-    // ==================== RELATIONSHIPS ====================
-
-    public function category(): BelongsTo
+    public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
-    public function orderItems(): HasMany
+    public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
     }
-
-    public function carts(): HasMany
-    {
-        return $this->hasMany(Cart::class);
-    }
-
-    // ==================== SCOPES ====================
 
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
 
-    public function scopeRecommended($query)
+    public function scopeAvailable($query)
+    {
+        return $query->where('is_active', true)
+        ->where('stock', '>', 0);
+    }
+
+    public function scopeRecommended(Builder $query): Builder
     {
         return $query->where('is_recommended', true);
-    }
-
-    public function scopeInStock($query)
-    {
-        return $query->where('stock', '>', 0);
-    }
-
-    // ==================== ACCESSORS ====================
-
-    public function getImageUrlAttribute(): string
-    {
-        if ($this->image) {
-            return asset('storage/products/' . $this->image);
-        }
-        return asset('images/product-placeholder.png');
     }
 
     public function getFormattedPriceAttribute(): string
@@ -92,29 +75,18 @@ class Product extends Model
         return 'Rp ' . number_format($this->price, 0, ',', '.');
     }
 
-    public function getFormattedWeightAttribute(): string
-    {
-        if ($this->weight >= 1000) {
-            return number_format($this->weight / 1000, 1) . ' kg';
-        }
-        return $this->weight . ' gram';
-    }
-
-    // ==================== METHODS ====================
-
-    public function decreaseStock(int $quantity): void
-    {
-        $this->decrement('stock', $quantity);
-        $this->increment('sold_count', $quantity);
-    }
-
     public function isAvailable(): bool
     {
         return $this->is_active && $this->stock > 0;
     }
 
-    public function hasStock(int $quantity = 1): bool
+    public function decreaseStock(int $quantity): void
     {
-        return $this->stock >= $quantity;
+        $this->decrement('stock', $quantity);
+    }
+
+    public function increaseStock(int $quantity): void
+    {
+        $this->increment('stock', $quantity);
     }
 }

@@ -10,22 +10,16 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->text('description');
-            $table->bigInteger('price')->unsigned();
-            $table->bigInteger('stock')->unsigned()->default(0);
-            $table->integer('weight')->unsigned()->default(0);    // gram (untuk ongkir)
-            $table->string('image');
-            $table->integer('sold_count')->unsigned()->default(0);
-            $table->boolean('is_recommended')->default(false);
+            $table->text('description')->nullable();
+            $table->integer('price');
+            $table->integer('stock')->default(0);
+            $table->boolean('is_recommended')->default(false); // Kolom baru
+            $table->string('image')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->timestamps();
-            
-            // Index
-            $table->index('is_recommended');
-            $table->index('is_active');
         });
     }
 

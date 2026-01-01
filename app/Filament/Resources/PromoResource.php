@@ -3,44 +3,65 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PromoResource\Pages;
-use App\Filament\Resources\PromoResource\RelationManagers;
 use App\Models\Promo;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\IconColumn;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PromoResource extends Resource
 {
     protected static ?string $model = Promo::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-ticket';
+    
+    protected static ?string $navigationGroup = 'Marketing';
+    
+    protected static ?int $navigationSort = 1;
+
+    protected static ?string $recordTitleAttribute = 'code';
+
+    public static function getNavigationBadge(): ?string
+    {
+        try {
+            return static::getModel()::where('is_active', true)->count();
+        } catch (\Exception $e) {return null;       }
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'success';
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
-        TextInput::make('code')
-            ->label('Kode Promo')
-            ->required()
-            ->unique(ignoreRecord: true),
+                Forms\Components\Section::make('Informasi Promo')
+                    ->schema([
+                        Forms\Components\TextInput::make('code')
+                            ->label('Kode Promo')
+                            ->required()
+                            ->maxLength(50)
+                            ->unique(ignoreRecord: true)
+                            ->helperText('Kode akan otomatis menjadi UPPERCASE')
+                            ->dehydrateStateUsing(fn ($state) => strtoupper($state)),
 
-        TextInput::make('discount_amount')
-            ->label('Potongan Harga')
-            ->numeric()
-            ->required(),
+                        Forms\Components\TextInput::make('discount')
+                            ->label('Potongan Harga')
+                            ->required()
+                            ->numeric()
+                            ->prefix('Rp')
+                            ->minValue(1000)
+                            ->helperText('Nominal potongan (contoh: 10000 = Rp 10.000)'),
 
-        Toggle::make('is_active')
-            ->label('Aktif')
-            ->default(true),
+                        Forms\Components\Toggle::make('is_active')
+                            ->label('Aktif')
+                            ->default(true)
+                            ->helperText('Hanya promo aktif yang bisa digunakan'),
+                    ])
+                    ->columns(2),
             ]);
     }
 
@@ -48,24 +69,50 @@ class PromoResource extends Resource
     {
         return $table
             ->columns([
-                //
-            TextColumn::make('code')
-                ->label('Kode')
-                ->searchable(),
+                Tables\Columns\TextColumn::make('code')
+                    ->label('Kode Promo')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->copyMessage('Kode disalin!')
+                    ->weight('bold')
+                    ->badge()
+                    ->color('primary'),
 
-            TextColumn::make('discount_amount')
-                ->label('Diskon')
-                ->money('IDR'),
+                Tables\Columns\TextColumn::make('discount')
+                    ->label('Potongan')
+                    ->money('IDR', locale: 'id')
+                    ->sortable(),
 
-            IconColumn::make('is_active')
-                ->label('Aktif')
-                ->boolean(),
+                Tables\Columns\TextColumn::make('orders_count')
+                    ->label('Digunakan')
+                    ->counts('orders')
+                    ->badge()
+                    ->color('info')
+                    ->suffix(' order'),
+
+                Tables\Columns\IconColumn::make('is_active')
+                    ->label('Status')
+                    ->boolean(),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Dibuat')
+                    ->dateTime('d M Y H:i')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
-                //
+                Tables\Filters\TernaryFilter::make('is_active')
+                    ->label('Status Aktif'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('toggleActive')
+                    ->label(fn (Promo $record) => $record->is_active ? 'Nonaktifkan' : 'Aktifkan')
+                    ->icon(fn (Promo $record) => $record->is_active ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
+                    ->color(fn (Promo $record) => $record->is_active ? 'danger' : 'success')
+                    ->action(fn (Promo $record) => $record->update(['is_active' => !$record->is_active])),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

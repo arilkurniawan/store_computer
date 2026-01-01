@@ -3,119 +3,223 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
+use App\Models\Category;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Select;
+use Illuminate\Support\Str;
 
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationLabel = 'Produk';
-    protected static ?string $pluralModelLabel = 'Produk';
     protected static ?string $navigationIcon = 'heroicon-o-cube';
+    
+    protected static ?string $navigationGroup = 'Produk';
+    
+    protected static ?int $navigationSort = 2;
+
+    protected static ?string $recordTitleAttribute = 'name';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-        TextInput::make('name')
-            ->label('Nama Produk')
-            ->required()
-            ->maxLength(255),
+                Forms\Components\Group::make()
+                    ->schema([
 
-        TextInput::make('price')
-            ->label('Harga')
-            ->numeric()
-            ->required()
-            ->prefix('IDR'),
+                        Forms\Components\Section::make('Informasi Produk')
+                            ->schema([
+                                Forms\Components\Select::make('category_id')
+                                    ->label('Kategori')
+                                    ->relationship('category', 'name')
+                                    ->required()
+                                    ->searchable()
+                                    ->preload()
+                                    ->createOptionForm([
+                                        Forms\Components\TextInput::make('name')
+                                            ->required(),
+                                        Forms\Components\TextInput::make('slug')
+                                            ->required(),
+                                    ]),
 
-        Select::make('category_id')
-            ->label('Kategori')
-            ->relationship('category', 'name')
-            ->required(),
+                                Forms\Components\TextInput::make('name')
+                                    ->label('Nama Produk')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function (string $state, Forms\Set $set) {
+                                        $set('slug', Str::slug($state));
+                                    }),
 
-        TextInput::make('stock')
-            ->label('Stok')
-            ->numeric()
-            ->required(),
+                                Forms\Components\TextInput::make('slug')
+                                    ->label('Slug')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->unique(ignoreRecord: true),
 
-        Textarea::make('description')
-            ->label('Deskripsi')
-            ->required()
-            ->columnSpanFull(),
+                                Forms\Components\RichEditor::make('description')
+                                    ->label('Deskripsi')
+                                    ->toolbarButtons([
+                                        'bold',
+                                        'italic',
+                                        'underline',
+                                        'bulletList',
+                                        'orderedList',
+                                    ])
+                                    ->columnSpanFull(),
+                            ])
+                            ->columns(2),
 
-        FileUpload::make('image')
-            ->label('Gambar Produk')
-            ->image()
-            ->directory('products')
-            ->imagePreviewHeight('150')
-            ->required(),
-            
-        Toggle::make('is_recommended')
-            ->label('Produk Rekomendasi')
-            ->default(false),
+                        Forms\Components\Section::make('Harga & Stok')
+                            ->schema([
+                                Forms\Components\TextInput::make('price')
+                                    ->label('Harga')
+                                    ->required()
+                                    ->numeric()
+                                    ->prefix('Rp')
+                                    ->minValue(0),
 
-            ]);
+                                Forms\Components\TextInput::make('stock')
+                                    ->label('Stok')
+                                    ->required()
+                                    ->numeric()
+                                    ->minValue(0)
+                                    ->default(0),
+                            ])
+                            ->columns(2),
+                    ])
+                    ->columnSpan(['lg' => 2]),
+
+                Forms\Components\Group::make()
+                    ->schema([
+                        Forms\Components\Section::make('Gambar')
+                            ->schema([
+                                Forms\Components\FileUpload::make('image')
+                                    ->label('Gambar Produk')
+                                    ->image()
+                                    ->directory('products')
+                                    ->imageResizeMode('cover')
+                                    ->imageCropAspectRatio('1:1')
+                                    ->imageResizeTargetWidth('500')
+                                    ->imageResizeTargetHeight('500'),
+                            ]),
+
+                        Forms\Components\Section::make('Status')
+                            ->schema([
+                                Forms\Components\Toggle::make('is_active')
+                                    ->label('Aktif')
+                                    ->default(true)
+                                    ->helperText('Produk aktif tampil di website'),
+
+                                Forms\Components\Toggle::make('is_recommended')
+                                    ->label('Rekomendasi')
+                                    ->default(false)
+                                    ->helperText('Tampil di bagian rekomendasi homepage'),
+                            ]),
+                    ])
+                    ->columnSpan(['lg' => 1]),
+            ])
+            ->columns(3);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
-                ImageColumn::make('image')
-                ->label('Gambar'),
+                Tables\Columns\ImageColumn::make('image')
+                    ->label('Gambar')
+                    ->square(),
 
-            TextColumn::make('name')
-                ->label('Nama')
-                ->searchable()
-                ->sortable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Nama Produk')
+                    ->searchable()
+                    ->sortable()
+                    ->description(fn (Product $record): string => $record->category->name ?? '-'),
 
-            TextColumn::make('category.name')
-                ->label('Kategori'),
+                Tables\Columns\TextColumn::make('price')
+                    ->label('Harga')
+                    ->money('IDR', locale: 'id')
+                    ->sortable(),
 
-            TextColumn::make('price')
-                ->label('Harga')
-                ->money('IDR'),
+                Tables\Columns\TextColumn::make('stock')
+                    ->label('Stok')
+                    ->sortable()
+                    ->badge()
+                    ->color(fn (int $state): string => match(true) {
+                        $state === 0 => 'danger',
+                        $state <= 10 => 'warning',
+                        default => 'success',
+                    }),
 
-            TextColumn::make('stock')
-                ->label('Stok'),
+                Tables\Columns\IconColumn::make('is_active')
+                    ->label('Aktif')
+                    ->boolean(),
 
-            IconColumn::make('is_recommended')
-                ->label('Rekomendasi')
-                ->boolean(),
+                Tables\Columns\IconColumn::make('is_recommended')
+                    ->label('Rekomendasi')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-star')
+                    ->falseIcon('heroicon-o-star')
+                    ->trueColor('warning')
+                    ->falseColor('gray'),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Dibuat')
+                    ->dateTime('d M Y')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
-                //
-                SelectFilter::make('category_id')
-                ->label('Kategori')
-                ->relationship('category', 'name'),
+                Tables\Filters\SelectFilter::make('category')
+                    ->relationship('category', 'name')
+                    ->label('Kategori')
+                    ->preload(),
 
+                Tables\Filters\TernaryFilter::make('is_active')
+                    ->label('Status Aktif'),
+
+                Tables\Filters\TernaryFilter::make('is_recommended')
+                    ->label('Rekomendasi'),
+
+                Tables\Filters\Filter::make('out_of_stock')
+                    ->label('Stok Habis')
+                    ->query(fn ($query) => $query->where('stock', 0)),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\Action::make('toggleRecommended')
+                        ->label(fn (Product $record) => $record->is_recommended ? 'Hapus Rekomendasi' : 'Set Rekomendasi')
+                        ->icon(fn (Product $record) => $record->is_recommended ? 'heroicon-o-star' : 'heroicon-s-star')
+                        ->color('warning')
+                        ->action(fn (Product $record) => $record->update(['is_recommended' => !$record->is_recommended])),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('activate')
+                        ->label('Aktifkan')
+                        ->icon('heroicon-o-check')
+                        ->color('success')
+                        ->action(fn ($records) => $records->each->update(['is_active' => true])),
+                    Tables\Actions\BulkAction::make('deactivate')
+                        ->label('Nonaktifkan')
+                        ->icon('heroicon-o-x-mark')
+                        ->color('danger')
+                        ->action(fn ($records) => $records->each->update(['is_active' => false])),
                 ]),
             ]);
     }

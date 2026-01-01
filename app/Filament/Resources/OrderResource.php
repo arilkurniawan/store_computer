@@ -4,167 +4,409 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
-use App\Filament\Resources\OrderResource\RelationManagers\ItemsRelationManager;
 use App\Models\Order;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Section;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\BadgeColumn;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $navigationLabel = 'Pesanan';
-    protected static ?string $pluralModelLabel = 'Pesanan';
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+    
+    protected static ?string $navigationGroup = 'Transaksi';
+    
+    protected static ?int $navigationSort = 1;
+
+    protected static ?string $recordTitleAttribute = 'invoice';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('status', 'pending')->count() ?: null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'warning';
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
-                Section::make('Data Pembeli')
-            ->schema([
-                TextInput::make('order_code')
-                    ->label('Kode Order')
-                    ->disabled(),
+                Forms\Components\Group::make()
+                    ->schema([
+                        // Info Order
+                        Forms\Components\Section::make('Informasi Pesanan')
+                            ->schema([
+                                Forms\Components\TextInput::make('invoice')
+                                    ->label('No. Invoice')
+                                    ->disabled(),
 
-                TextInput::make('name')
-                    ->label('Nama')
-                    ->disabled(),
+                                Forms\Components\Select::make('status')
+                                    ->label('Status')
+                                    ->options(Order::getStatuses())
+                                    ->required(),
 
-                TextInput::make('phone')
-                    ->label('No. HP')
-                    ->disabled(),
+                                Forms\Components\TextInput::make('subtotal')
+                                    ->label('Subtotal')
+                                    ->disabled()
+                                    ->prefix('Rp')
+                                    ->numeric(),
 
-                Textarea::make('address')
-                    ->label('Alamat')
-                    ->disabled(),
+                                Forms\Components\TextInput::make('discount')
+                                    ->label('Diskon')
+                                    ->disabled()
+                                    ->prefix('Rp')
+                                    ->numeric(),
 
-                TextInput::make('city')
-                    ->label('Kota')
-                    ->disabled(),
+                                Forms\Components\TextInput::make('total')
+                                    ->label('Total')
+                                    ->disabled()
+                                    ->prefix('Rp')
+                                    ->numeric(),
 
-                TextInput::make('post_code')
-                    ->label('Kode Pos')
-                    ->disabled(),
-            ])
-            ->columns(2),
+                                Forms\Components\Textarea::make('notes')
+                                    ->label('Catatan Admin')
+                                    ->columnSpanFull(),
+                            ])
+                            ->columns(2),
 
-                Section::make('Pembayaran')
-            ->schema([
-                TextInput::make('total_price')
-                    ->label('Total Harga')
-                    ->numeric()
-                    ->disabled(),
+                        // Info Pengiriman
+                        Forms\Components\Section::make('Informasi Pengiriman')
+                            ->schema([
+                                Forms\Components\TextInput::make('shipping_name')
+                                    ->label('Nama Penerima')
+                                    ->disabled(),
 
-                TextInput::make('promo.code')
-                    ->label('Kode Promo')
-                    ->disabled()
-                    ->dehydrated(false)
-                    ->formatStateUsing(fn ($state, $record) => $record?->promo?->code ?? '-'),
+                                Forms\Components\TextInput::make('shipping_phone')
+                                    ->label('No. HP')
+                                    ->disabled(),
 
-                TextInput::make('discount_amount')
-                    ->label('Diskon')
-                    ->numeric()
-                    ->disabled(),
+                                Forms\Components\Textarea::make('shipping_address')
+                                    ->label('Alamat')
+                                    ->disabled()
+                                    ->columnSpanFull(),
 
-                Select::make('status')
-                    ->label('Status Pesanan')
-                    ->options([
-                        'pending' => 'Pending',
-                        'paid' => 'Paid',
-                        'failed' => 'Failed',
+                                Forms\Components\TextInput::make('shipping_province')
+                                    ->label('Provinsi')
+                                    ->disabled(),
+
+                                Forms\Components\TextInput::make('shipping_city')
+                                    ->label('Kota')
+                                    ->disabled(),
+
+                                Forms\Components\TextInput::make('shipping_postal_code')
+                                    ->label('Kode Pos')
+                                    ->disabled(),
+                            ])
+                            ->columns(3),
                     ])
-                    ->required(),
+                    ->columnSpan(['lg' => 2]),
+
+                // Sidebar
+                Forms\Components\Group::make()
+                    ->schema([
+                        Forms\Components\Section::make('Customer')
+                            ->schema([
+                                Forms\Components\Placeholder::make('user_name')
+                                    ->label('Nama')
+                                    ->content(fn (Order $record): string => $record->user->name ?? '-'),
+
+                                Forms\Components\Placeholder::make('user_email')
+                                    ->label('Email')
+                                    ->content(fn (Order $record): string => $record->user->email ?? '-'),
+
+                                Forms\Components\Placeholder::make('ordered_at')
+                                    ->label('Tanggal Order')
+                                    ->content(fn (Order $record): string => $record->created_at->format('d M Y H:i')),
+                            ]),
+
+                        Forms\Components\Section::make('Bukti Pembayaran')
+                            ->schema([
+                                Forms\Components\FileUpload::make('payment_proof')
+                                    ->label('')
+                                    ->image()
+                                    ->directory('payment-proofs')
+                                    ->openable()
+                                    ->downloadable(),
+                            ])
+                            ->collapsible(),
+
+                        Forms\Components\Section::make('Promo')
+                            ->schema([
+                                Forms\Components\Placeholder::make('promo_code')
+                                    ->label('Kode Promo')
+                                    ->content(fn (Order $record): string => $record->promo->code ?? '-'),
+
+                                Forms\Components\Placeholder::make('promo_discount')
+                                    ->label('Potongan')
+                                    ->content(fn (Order $record): string => $record->promo ? $record->promo->formatted_discount : '-'),
+                            ])
+                            ->hidden(fn (Order $record): bool => !$record->promo_id),
+                    ])
+                    ->columnSpan(['lg' => 1]),
             ])
-                    ->columns(2),
-                    ]);
+            ->columns(3);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
-                TextColumn::make('order_code')
-                ->label('Kode')
-                ->searchable(),
+                Tables\Columns\TextColumn::make('invoice')
+                    ->label('Invoice')
+                    ->searchable()
+                    ->sortable()
+                    ->weight('bold')
+                    ->copyable(),
 
-            TextColumn::make('name')
-                ->label('Pembeli')
-                ->searchable(),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Customer')
+                    ->searchable()
+                    ->sortable(),
 
-            TextColumn::make('subtotal_produk')
-                ->label('Subtotal Produk')
-                ->getStateUsing(fn ($record) =>
-                    $record->total_price + $record->discount_amount)
-                ->money('IDR'),
+                Tables\Columns\TextColumn::make('total')
+                    ->label('Total')
+                    ->money('IDR', locale: 'id')
+                    ->sortable(),
 
-            TextColumn::make('discount_amount')
-                ->label('Diskon')
-                ->money('IDR')
-                ->color('success'),
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => Order::getStatuses()[$state] ?? $state)
+                    ->color(fn (string $state): string => match($state) {
+                        'pending' => 'warning',
+                        'paid' => 'info',
+                        'processing' => 'primary',
+                        'shipped' => 'info',
+                        'completed' => 'success',
+                        'cancelled' => 'danger',
+                        default => 'secondary',
+                    }),
 
-            TextColumn::make('total_price')
-                ->label('Total Bayar')
-                ->money('IDR')
-                ->weight('bold'),
+                Tables\Columns\ImageColumn::make('payment_proof')
+                    ->label('Bukti')
+                    ->circular()
+                    ->defaultImageUrl(fn () => null),
 
-            BadgeColumn::make('status')
-                ->label('Status')
-                ->colors([
-                    'warning' => 'pending',
-                    'success' => 'paid',
-                    'danger' => 'failed',
-                ]),
+                Tables\Columns\TextColumn::make('shipping_city')
+                    ->label('Kota')
+                    ->toggleable(),
 
-            TextColumn::make('created_at')
-                ->label('Tanggal')
-                ->dateTime(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Tanggal')
+                    ->dateTime('d M Y H:i')
+                    ->sortable(),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Status')
+                    ->options(Order::getStatuses()),
+
+                Tables\Filters\Filter::make('has_payment_proof')
+                    ->label('Ada Bukti Bayar')
+                    ->query(fn ($query) => $query->whereNotNull('payment_proof')),
+
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('from')
+                            ->label('Dari Tanggal'),
+                        Forms\Components\DatePicker::make('until')
+                            ->label('Sampai Tanggal'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when($data['from'], fn ($q, $date) => $q->whereDate('created_at', '>=', $date))
+                            ->when($data['until'], fn ($q, $date) => $q->whereDate('created_at', '<=', $date));
+                    }),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+
+                    // Quick Status Actions
+                    Tables\Actions\Action::make('markAsPaid')
+                        ->label('Tandai Sudah Bayar')
+                        ->icon('heroicon-o-banknotes')
+                        ->color('success')
+                        ->visible(fn (Order $record) => $record->status === 'pending' && $record->payment_proof)
+                        ->requiresConfirmation()
+                        ->action(fn (Order $record) => $record->update(['status' => 'paid'])),
+
+                    Tables\Actions\Action::make('markAsProcessing')
+                        ->label('Proses Pesanan')
+                        ->icon('heroicon-o-cog-6-tooth')
+                        ->color('primary')
+                        ->visible(fn (Order $record) => $record->status === 'paid')
+                        ->requiresConfirmation()
+                        ->action(fn (Order $record) => $record->update(['status' => 'processing'])),
+
+                    Tables\Actions\Action::make('markAsShipped')
+                        ->label('Kirim Pesanan')
+                        ->icon('heroicon-o-truck')
+                        ->color('info')
+                        ->visible(fn (Order $record) => $record->status === 'processing')
+                        ->requiresConfirmation()
+                        ->action(fn (Order $record) => $record->update(['status' => 'shipped'])),
+
+                    Tables\Actions\Action::make('markAsCompleted')
+                        ->label('Selesai')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->visible(fn (Order $record) => $record->status === 'shipped')
+                        ->requiresConfirmation()
+                        ->action(fn (Order $record) => $record->update(['status' => 'completed'])),
+
+                    Tables\Actions\Action::make('cancel')
+                        ->label('Batalkan')
+                        ->icon('heroicon-o-x-circle')
+                        ->color('danger')
+                        ->visible(fn (Order $record) => in_array($record->status, ['pending', 'paid']))
+                        ->requiresConfirmation()
+                        ->action(fn (Order $record) => $record->update(['status' => 'cancelled'])),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                Tables\Actions\DeleteBulkAction::make(),
+                    //
                 ]),
             ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Group::make()
+                    ->schema([
+                        Infolists\Components\Section::make('Informasi Pesanan')
+                            ->schema([
+                                Infolists\Components\TextEntry::make('invoice')
+                                    ->label('No. Invoice')
+                                    ->weight('bold')
+                                    ->copyable(),
+
+                                Infolists\Components\TextEntry::make('status')
+                                    ->label('Status')
+                                    ->badge()
+                                    ->formatStateUsing(fn (string $state): string => Order::getStatuses()[$state] ?? $state)
+                                    ->color(fn (string $state): string => match($state) {
+                                        'pending' => 'warning',
+                                        'paid' => 'info',
+                                        'processing' => 'primary',
+                                        'shipped' => 'info',
+                                        'completed' => 'success',
+                                        'cancelled' => 'danger',
+                                        default => 'secondary',
+                                    }),
+
+                                Infolists\Components\TextEntry::make('created_at')
+                                    ->label('Tanggal Order')
+                                    ->dateTime('d M Y H:i'),
+                            ])
+                            ->columns(3),
+
+                        Infolists\Components\Section::make('Ringkasan Harga')
+                            ->schema([
+                                Infolists\Components\TextEntry::make('subtotal')
+                                    ->label('Subtotal')
+                                    ->money('IDR', locale: 'id'),
+
+                                Infolists\Components\TextEntry::make('discount')
+                                    ->label('Diskon')
+                                    ->money('IDR', locale: 'id')
+                                    ->visible(fn (Order $record) => $record->discount > 0),
+
+                                Infolists\Components\TextEntry::make('promo.code')
+                                    ->label('Kode Promo')
+                                    ->badge()
+                                    ->color('success')
+                                    ->visible(fn (Order $record) => $record->promo_id),
+
+                                Infolists\Components\TextEntry::make('total')
+                                    ->label('Total')
+                                    ->money('IDR', locale: 'id')
+                                    ->weight('bold')
+                                    ->size('lg'),
+                            ])
+                            ->columns(4),
+
+                        Infolists\Components\Section::make('Informasi Pengiriman')
+                            ->schema([
+                                Infolists\Components\TextEntry::make('shipping_name')
+                                    ->label('Nama Penerima'),
+
+                                Infolists\Components\TextEntry::make('shipping_phone')
+                                    ->label('No. HP'),
+
+                                Infolists\Components\TextEntry::make('shipping_address')
+                                    ->label('Alamat')
+                                    ->columnSpanFull(),
+
+                                Infolists\Components\TextEntry::make('shipping_province')
+                                    ->label('Provinsi'),
+
+                                Infolists\Components\TextEntry::make('shipping_city')
+                                    ->label('Kota'),
+
+                                Infolists\Components\TextEntry::make('shipping_postal_code')
+                                    ->label('Kode Pos'),
+                            ])
+                            ->columns(3),
+                    ])
+                    ->columnSpan(['lg' => 2]),
+
+                Infolists\Components\Group::make()
+                    ->schema([
+                        Infolists\Components\Section::make('Customer')
+                            ->schema([
+                                Infolists\Components\TextEntry::make('user.name')
+                                    ->label('Nama'),
+
+                                Infolists\Components\TextEntry::make('user.email')
+                                    ->label('Email'),
+                            ]),
+
+                        Infolists\Components\Section::make('Bukti Pembayaran')
+                            ->schema([
+                                Infolists\Components\ImageEntry::make('payment_proof')
+                                    ->label('')
+                                    ->height(200),
+                            ])
+                            ->visible(fn (Order $record) => $record->payment_proof),
+
+                        Infolists\Components\Section::make('Catatan')
+                            ->schema([
+                                Infolists\Components\TextEntry::make('notes')
+                                    ->label('')
+                                    ->placeholder('Tidak ada catatan'),
+                            ]),
+                    ])
+                    ->columnSpan(['lg' => 1]),
+            ])
+            ->columns(3);
     }
 
     public static function getRelations(): array
     {
         return [
-            ItemsRelationManager::class,
+            RelationManagers\ItemsRelationManager::class,
         ];
-    }
-
-    public static function canCreate(): bool
-    {
-        return false;
     }
 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListOrders::route('/'),
-            'create' => Pages\CreateOrder::route('/create'),
+            'view' => Pages\ViewOrder::route('/{record}'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
     }

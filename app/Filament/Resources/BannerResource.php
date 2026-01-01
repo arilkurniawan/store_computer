@@ -3,44 +3,67 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\BannerResource\Pages;
-use App\Filament\Resources\BannerResource\RelationManagers;
 use App\Models\Banner;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class BannerResource extends Resource
 {
     protected static ?string $model = Banner::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-photo';
+    
+    protected static ?string $navigationGroup = 'Marketing';
+    
+    protected static ?int $navigationSort = 2;
+
+    protected static ?string $recordTitleAttribute = 'title';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('subtitle')
-                    ->maxLength(255),
-                Forms\Components\FileUpload::make('image')
-                    ->image()
-                    ->required(),
-                Forms\Components\TextInput::make('link')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('button_text')
-                    ->maxLength(255),
-                Forms\Components\Toggle::make('is_active')
-                    ->required(),
-                Forms\Components\TextInput::make('sort_order')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
+                Forms\Components\Section::make('Informasi Banner')
+                    ->schema([
+                        Forms\Components\TextInput::make('title')
+                            ->label('Judul Banner')
+                            ->required()
+                            ->maxLength(255),
+
+                        Forms\Components\TextInput::make('link')
+                            ->label('Link (Opsional)')
+                            ->url()
+                            ->maxLength(255)
+                            ->helperText('URL tujuan saat banner diklik'),
+
+                        Forms\Components\TextInput::make('order')
+                            ->label('Urutan')
+                            ->numeric()
+                            ->default(0)
+                            ->helperText('Urutan tampil (0 = paling awal)'),
+
+                        Forms\Components\Toggle::make('is_active')
+                            ->label('Aktif')
+                            ->default(true),
+                    ])
+                    ->columns(2),
+
+                Forms\Components\Section::make('Gambar Banner')
+                    ->schema([
+                        Forms\Components\FileUpload::make('image')
+                            ->label('Gambar')
+                            ->image()
+                            ->required()
+                            ->directory('banners')
+                            ->imageResizeMode('cover')
+                            ->imageCropAspectRatio('16:9')
+                            ->imageResizeTargetWidth('1200')
+                            ->imageResizeTargetHeight('675')
+                            ->helperText('Rekomendasi ukuran: 1200x675 pixel (16:9)'),
+                    ]),
             ]);
     }
 
@@ -48,34 +71,46 @@ class BannerResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('image')
+                    ->label('Gambar')
+                    ->height(60),
+
                 Tables\Columns\TextColumn::make('title')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('subtitle')
-                    ->searchable(),
-                Tables\Columns\ImageColumn::make('image'),
-                Tables\Columns\TextColumn::make('link')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('button_text')
-                    ->searchable(),
-                Tables\Columns\IconColumn::make('is_active')
-                    ->boolean(),
-                Tables\Columns\TextColumn::make('sort_order')
-                    ->numeric()
+                    ->label('Judul')
+                    ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+
+                Tables\Columns\TextColumn::make('link')
+                    ->label('Link')
+                    ->limit(30)
+                    ->url(fn ($record) => $record->link, shouldOpenInNewTab: true)
+                    ->toggleable(),
+
+                Tables\Columns\TextColumn::make('order')
+                    ->label('Urutan')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->badge()
+                    ->color('gray'),
+
+                Tables\Columns\IconColumn::make('is_active')
+                    ->label('Aktif')
+                    ->boolean(),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Dibuat')
+                    ->dateTime('d M Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('order')
+            ->reorderable('order')
             ->filters([
-                //
+                Tables\Filters\TernaryFilter::make('is_active')
+                    ->label('Status Aktif'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

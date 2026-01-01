@@ -10,45 +10,28 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('order_number')->unique();
-            $table->enum('status', ['pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled'])->default('pending');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('promo_id')->nullable()->constrained()->nullOnDelete();
             
-            // ============ PRICING ============
-            $table->decimal('subtotal', 12, 2);
-            $table->decimal('shipping_cost', 10, 2)->default(0);
-            $table->decimal('discount_amount', 10, 2)->default(0); 
-            $table->decimal('total_amount', 12, 2);
-            $table->decimal('total_weight', 10, 2)->default(0);
+            $table->string('invoice')->unique();
             
-            // ============ COUPON ============
-            $table->foreignId('coupon_id')->nullable()->constrained()->nullOnDelete();
-            $table->string('coupon_code')->nullable();
+            $table->integer('subtotal');
+            $table->integer('discount')->default(0);
+            $table->integer('total');
             
-            // ============ PAYMENT MANUAL ============
-            $table->string('payment_method')->nullable();
-            $table->enum('payment_status', ['unpaid', 'pending', 'paid', 'rejected'])->default('unpaid');
-            $table->string('payment_proof')->nullable();
-            $table->text('payment_notes')->nullable();
+            $table->string('status')->default('pending');
             
-            // ============ SHIPPING INFO ============
             $table->string('shipping_name');
             $table->string('shipping_phone');
             $table->text('shipping_address');
             $table->string('shipping_city');
-            $table->string('shipping_province')->nullable();
             $table->string('shipping_postal_code');
+            $table->string('shipping_province');
             
-            // ============ COURIER ============
-            $table->string('courier')->nullable();
-            $table->string('courier_service')->nullable();
-            $table->string('tracking_number')->nullable();
+            $table->string('payment_proof')->nullable();
             
-            // ============ NOTES & TIMESTAMPS ============
-            $table->text('notes')->nullable();                     
-            $table->timestamp('paid_at')->nullable();
-            $table->timestamp('shipped_at')->nullable();
-            $table->timestamp('delivered_at')->nullable();
+            $table->text('notes')->nullable();
+            
             $table->timestamps();
         });
     }

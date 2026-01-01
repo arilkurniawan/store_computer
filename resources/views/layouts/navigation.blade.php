@@ -1,100 +1,216 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                    </a>
-                </div>
+<div x-data="searchComponent()">
+<nav class="bg-white border-b border-[#bbbab7] sticky top-0 py-2 z-50">
 
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                </div>
-            </div>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
+    <div class="max-w-9xl mx-auto px-3">
+        <div class="flex items-center justify-between h-16 ">
+            
+            {{-- Logo --}}
+            <a href="/" class="flex-shrink-0">
+                <img src="{{ asset('img/logo.png') }}" alt="logo" class="h-max w-auto max-w-[110px] object-contain">
+            </a>
 
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
+            {{-- Search Bar (BARU) --}}
+                <div class="hidden md:block flex-1 max-w-md mx-6 relative">
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            x-model="query"
+                            @input.debounce.300ms="search()"
+                            @focus="showResults = true"
+                            @keydown.escape="closeSearch()"
+                            placeholder="Cari produk..." 
+                            class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
+                        >
+                        {{-- Search Icon / Loading --}}
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                            <svg x-show="!loading" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            <svg x-show="loading" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </div>
+                        {{-- Clear Button --}}
+                        <button 
+                            x-show="query.length > 0" 
+                            @click="clearSearch()"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
                         </button>
-                    </x-slot>
+                    </div>
 
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
+                    {{-- Search Results Dropdown --}}
+                    <div 
+                        x-show="showResults && query.length >= 2" 
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 -translate-y-2"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-150"
+                        @click.away="showResults = false"
+                        class="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 max-h-96 overflow-y-auto z-50"
+                    >
+                        {{-- Loading State --}}
+                        <div x-show="loading" class="p-4 text-center text-gray-500">
+                            <svg class="w-6 h-6 animate-spin mx-auto mb-2 text-orange-500" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span class="text-sm">Mencari...</span>
+                        </div>
 
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
+                        {{-- Results --}}
+                        <div x-show="!loading">
+                            {{-- Products Found --}}
+                            <template x-if="products.length > 0">
+                                <div>
+                                    <div class="px-4 py-2 bg-gray-50 border-b">
+                                        <span class="text-sm text-gray-600">
+                                            Ditemukan <span x-text="products.length" class="font-semibold text-orange-600"></span> produk
+                                        </span>
+                                    </div>
+                                    <template x-for="product in products" :key="product.id">
+                                        <a :href="product.url" class="flex items-center gap-3 p-3 hover:bg-orange-50 border-b last:border-b-0 transition">
+                                            {{-- Product Image --}}
+                                            <div class="w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                                                <template x-if="product.image">
+                                                    <img :src="product.image" :alt="product.name" class="w-full h-full object-cover">
+                                                </template>
+                                                <template x-if="!product.image">
+                                                    <div class="w-full h-full flex items-center justify-center text-xl bg-orange-100">🥔</div>
+                                                </template>
+                                            </div>
+                                            {{-- Product Info --}}
+                                            <div class="flex-1 min-w-0">
+                                                <p class="font-medium text-gray-800 truncate" x-text="product.name"></p>
+                                                <p class="text-xs text-gray-500" x-text="product.category"></p>
+                                            </div>
+                                            {{-- Price & Stock --}}
+                                            <div class="text-right flex-shrink-0">
+                                                <p class="font-bold text-orange-600" x-text="product.price_formatted"></p>
+                                                <p class="text-xs" :class="product.stock > 0 ? 'text-green-600' : 'text-red-500'" x-text="product.stock > 0 ? 'Stok: ' + product.stock : 'Habis'"></p>
+                                            </div>
+                                        </a>
+                                    </template>
+                                </div>
+                            </template>
 
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
-                            </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
+                            {{-- No Results --}}
+                            <template x-if="products.length === 0 && !loading && searched">
+                                <div class="p-6 text-center">
+                                    <div class="text-4xl mb-2">🔍</div>
+                                    <p class="text-gray-600 font-medium">Produk tidak ditemukan</p>
+                                    <p class="text-sm text-gray-400 mt-1">Coba kata kunci lain</p>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+            {{-- Desktop Menu --}}
+            <div class="md:flex items-center space-x-6">
+                <a href="/" class="text-gray-700 hover:text-orange-600 font-medium {{ request()->is('/') ? 'text-orange-600' : '' }}">
+                    Home
+                </a>
+                <a href="{{ route('products.index') }}" class="text-gray-700 hover:text-orange-600 font-medium {{ request()->routeIs('products.*') ? 'text-orange-600' : '' }}">
+                    Produk
+                </a>
+                
+                @auth
+                    {{-- Keranjang dengan Badge --}}
+                    <a href="{{ route('cart.index') }}" class="relative text-gray-700 hover:text-orange-600 font-medium">
+                        🛒 Keranjang
+                        @php
+                            $cartCount = \App\Models\Cart::where('user_id', auth()->id())->sum('quantity');
+                        @endphp
+                        @if($cartCount > 0)
+                            <span class="absolute -top-2 -right-3 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                {{ $cartCount }}
+                            </span>
+                        @endif
+                    </a>
+                    
+                    <a href="{{ route('orders.index') }}" class="text-gray-700 hover:text-orange-600 font-medium {{ request()->routeIs('orders.*') ? 'text-orange-600' : '' }}">
+                        Pesanan
+                    </a>
+                    
+                    <span class="text-gray-400">|</span>
+                    <span class="text-gray-600">{{ Auth::user()->name }}</span>
+                    
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="text-red-500 hover:text-red-600 font-medium">
+                            Logout
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="text-gray-700 hover:text-orange-600 font-medium">
+                        Login
+                    </a>
+                    <a href="{{ route('register') }}" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition">
+                        Daftar
+                    </a>
+                @endauth
             </div>
-
-            <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-        </div>
-
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-            </div>
-
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
-
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
-            </div>
-        </div>
     </div>
 </nav>
+</div>>
+{{-- Mobile Menu Toggle Script --}}
+<script>
+    document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+        document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+</script>
+
+<script>
+function searchComponent() {
+    return {
+        query: '',
+        products: [],
+        loading: false,
+        showResults: false,
+        searched: false,
+
+        async search() {
+            if (this.query.length < 2) {
+                this.products = [];
+                this.searched = false;
+                return;
+            }
+
+            this.loading = true;
+            this.showResults = true;
+
+            try {
+                const response = await fetch(`/api/products/search?q=${encodeURIComponent(this.query)}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    this.products = data.products;
+                }
+                this.searched = true;
+            } catch (error) {
+                console.error('Search error:', error);
+                this.products = [];
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        clearSearch() {
+            this.query = '';
+            this.products = [];
+            this.showResults = false;
+            this.searched = false;
+        },
+
+        closeSearch() {
+            this.showResults = false;
+        }
+    }
+}
+</script>

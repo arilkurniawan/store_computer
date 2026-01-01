@@ -11,13 +11,18 @@
     <div>
         <p>{{ $product->name }}</p>
         <p>Rp {{ number_format($product->price) }}</p>
-
-        <form action="{{ route('cart.add', $product) }}" method="POST">
+        
+        <form action="{{ route('cart.store') }}" method="POST">
             @csrf
-            <button type="submit">Tambah ke Keranjang</button>
+            <input type="hidden" name="product_id" value="{{ $product->id }}">
+            <input type="hidden" name="quantity" value="1">
+            <button type="submit" class="btn btn-primary">
+                Tambah ke Keranjang
+            </button>
         </form>
     </div>
 @endforeach
+
 
     @if (session('success'))
     <p style="color: green;">

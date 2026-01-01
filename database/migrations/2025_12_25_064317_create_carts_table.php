@@ -10,12 +10,11 @@ return new class extends Migration
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->integer('quantity')->unsigned()->default(1);
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->integer('quantity')->default(1);
             $table->timestamps();
 
-            // Unique: 1 user hanya bisa punya 1 entry per product
             $table->unique(['user_id', 'product_id']);
         });
     }

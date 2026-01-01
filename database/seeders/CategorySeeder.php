@@ -11,44 +11,41 @@ class CategorySeeder extends Seeder
     {
         $categories = [
             [
-                'name' => 'Keripik Balado',
-                'slug' => 'keripik-balado',
-                'icon' => 'fire',
-                'description' => 'Keripik dengan bumbu balado pedas khas Padang',
+                'name' => 'Keripik Sanjai Original',
+                'slug' => 'keripik-sanjai-original',
+                'image' => null,
                 'is_active' => true,
-                'sort_order' => 1,
             ],
             [
-                'name' => 'Keripik Original',
-                'slug' => 'keripik-original',
-                'icon' => 'star',
-                'description' => 'Keripik tanpa bumbu, gurih alami',
+                'name' => 'Keripik Sanjai Balado',
+                'slug' => 'keripik-sanjai-balado',
+                'image' => null,
                 'is_active' => true,
-                'sort_order' => 2,
             ],
             [
-                'name' => 'Keripik Manis',
-                'slug' => 'keripik-manis',
-                'icon' => 'cake',
-                'description' => 'Keripik dengan rasa manis legit',
+                'name' => 'Keripik Sanjai Manis',
+                'slug' => 'keripik-sanjai-manis',
+                'image' => null,
                 'is_active' => true,
-                'sort_order' => 3,
+            ],
+            [
+                'name' => 'Keripik Sanjai Premium',
+                'slug' => 'keripik-sanjai-premium',
+                'image' => null,
+                'is_active' => true,
             ],
             [
                 'name' => 'Paket Hemat',
                 'slug' => 'paket-hemat',
-                'icon' => 'gift',
-                'description' => 'Paket bundling dengan harga spesial',
+                'image' => null,
                 'is_active' => true,
-                'sort_order' => 4,
             ],
         ];
 
         foreach ($categories as $category) {
-            Category::updateOrCreate(
-                ['slug' => $category['slug']],
-                $category
-            );
+            Category::create($category);
         }
+
+        $this->command->info('✅ Categories seeded: ' . count($categories) . ' categories');
     }
 }
