@@ -1,10 +1,7 @@
 <div x-data="searchComponent()">
-<nav class="bg-white border-b border-[#bbbab7] sticky top-0 py-2 z-50">
-
-
+<nav class="bg-white border-b border-[#bbbab7] fixed top-0 left-0 right-0 py-2 z-50">
     <div class="max-w-9xl mx-auto px-3">
         <div class="flex items-center justify-between h-16 ">
-            
             {{-- Logo --}}
             <a href="/" class="flex-shrink-0">
                 <img src="{{ asset('img/logo.png') }}" alt="logo" class="h-max w-auto max-w-[110px] object-contain">
@@ -20,8 +17,7 @@
                             @focus="showResults = true"
                             @keydown.escape="closeSearch()"
                             placeholder="Cari produk..." 
-                            class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
-                        >
+                            class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm">
                         {{-- Search Icon / Loading --}}
                         <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                             <svg x-show="!loading" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -36,8 +32,7 @@
                         <button 
                             x-show="query.length > 0" 
                             @click="clearSearch()"
-                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                        >
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
@@ -52,8 +47,7 @@
                         x-transition:enter-end="opacity-100 translate-y-0"
                         x-transition:leave="transition ease-in duration-150"
                         @click.away="showResults = false"
-                        class="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 max-h-96 overflow-y-auto z-50"
-                    >
+                        class="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 max-h-96 overflow-y-auto z-50">
                         {{-- Loading State --}}
                         <div x-show="loading" class="p-4 text-center text-gray-500">
                             <svg class="w-6 h-6 animate-spin mx-auto mb-2 text-orange-500" fill="none" viewBox="0 0 24 24">
@@ -76,7 +70,7 @@
                                     <template x-for="product in products" :key="product.id">
                                         <a :href="product.url" class="flex items-center gap-3 p-3 hover:bg-orange-50 border-b last:border-b-0 transition">
                                             {{-- Product Image --}}
-                                            <div class="w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                                            <div class="w-12 h-12 flex-shrink-0 rounded-lg bg-gray-100">
                                                 <template x-if="product.image">
                                                     <img :src="product.image" :alt="product.name" class="w-full h-full object-cover">
                                                 </template>
@@ -117,13 +111,18 @@
                     Home
                 </a>
                 <a href="{{ route('products.index') }}" class="text-gray-700 hover:text-orange-600 font-medium {{ request()->routeIs('products.*') ? 'text-orange-600' : '' }}">
-                    Produk
+                    Product
                 </a>
                 
                 @auth
+                    
+                    <a href="{{ route('orders.index') }}" class="text-gray-700 hover:text-orange-600 font-medium {{ request()->routeIs('orders.*') ? 'text-orange-600' : '' }}">
+                        Order
+                    </a>
+                    
                     {{-- Keranjang dengan Badge --}}
                     <a href="{{ route('cart.index') }}" class="relative text-gray-700 hover:text-orange-600 font-medium">
-                        🛒 Keranjang
+                        🛒
                         @php
                             $cartCount = \App\Models\Cart::where('user_id', auth()->id())->sum('quantity');
                         @endphp
@@ -133,11 +132,7 @@
                             </span>
                         @endif
                     </a>
-                    
-                    <a href="{{ route('orders.index') }}" class="text-gray-700 hover:text-orange-600 font-medium {{ request()->routeIs('orders.*') ? 'text-orange-600' : '' }}">
-                        Pesanan
-                    </a>
-                    
+
                     <span class="text-gray-400">|</span>
                     <span class="text-gray-600">{{ Auth::user()->name }}</span>
                     
@@ -158,7 +153,7 @@
             </div>
     </div>
 </nav>
-</div>>
+</div>
 {{-- Mobile Menu Toggle Script --}}
 <script>
     document.getElementById('mobile-menu-btn').addEventListener('click', function() {

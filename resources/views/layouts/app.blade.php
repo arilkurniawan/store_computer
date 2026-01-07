@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -83,43 +83,12 @@
     {{-- ======================= --}}
     {{-- MAIN CONTENT AREA --}}
     {{-- ======================= --}}
-    <main class="flex-grow">
+    <main class="flex-grow pt-20">
         @yield('content')
     </main>
 
     {{-- FOOTER --}}
-    <footer class="bg-gray-800 text-white py-12 mt-auto">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                    <h3 class="text-xl font-bold mb-4">🥔 Keripik Sanjai</h3>
-                    <p class="text-gray-400">
-                        Oleh-oleh khas Bukittinggi, Sumatera Barat. 
-                        Dibuat dari singkong pilihan dengan resep turun temurun.
-                    </p>
-                </div>
-                <div>
-                    <h3 class="text-xl font-bold mb-4">Kontak</h3>
-                    <p class="text-gray-400">📍 Bukittinggi, Sumatera Barat</p>
-                    <p class="text-gray-400">📞 0812-3456-7890</p>
-                    <p class="text-gray-400">✉️ info@keripik-sanjai.com</p>
-                </div>
-                <div>
-                    <h3 class="text-xl font-bold mb-4">Link</h3>
-                    <ul class="text-gray-400 space-y-2">
-                        <li><a href="{{ route('products.index') }}" class="hover:text-white transition">Produk</a></li>
-                        <li><a href="{{ route('home') }}" class="hover:text-white transition">Beranda</a></li>
-                        @auth
-                            <li><a href="{{ route('orders.index') }}" class="hover:text-white transition">Pesanan Saya</a></li>
-                        @endauth
-                    </ul>
-                </div>
-            </div>
-            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; {{ date('Y') }} Keripik Sanjai. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+   @include('layouts.footer')
 
     @stack('scripts')
 </body>

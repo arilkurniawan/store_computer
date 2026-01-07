@@ -82,6 +82,9 @@ Route::middleware('auth')->group(function () {
             Route::post('/', 'store')->name('store');
         });
 
+Route::post('/promo/validate', [\App\Http\Controllers\PromoController::class, 'validate'])
+        ->name('promo.validate');
+
     // ----------------------------------------
     // PAYMENT ROUTES
     // ----------------------------------------
