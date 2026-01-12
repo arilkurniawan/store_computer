@@ -17,9 +17,9 @@
             </h1>
             <p class="mt-2 text-gray-600">
                 @if(isset($activeCategory))
-                    Menampilkan produk dalam kategori {{ $activeCategory->name }}
+                    Shop By Category {{ $activeCategory->name }}
                 @else
-                    Temukan keripik sanjai favorit Anda
+                    Find Your Perfect Product
                 @endif
             </p>
         </div>

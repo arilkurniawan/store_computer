@@ -11,32 +11,32 @@ class CategorySeeder extends Seeder
     {
         $categories = [
             [
-                'name' => 'Keripik Sanjai Original',
-                'slug' => 'keripik-sanjai-original',
+                'name' => 'ASUS',
+                'slug' => 'ASUS',
                 'image' => null,
                 'is_active' => true,
             ],
             [
-                'name' => 'Keripik Sanjai Balado',
-                'slug' => 'keripik-sanjai-balado',
+                'name' => 'LENOVO',
+                'slug' => 'LENOVO',
                 'image' => null,
                 'is_active' => true,
             ],
             [
-                'name' => 'Keripik Sanjai Manis',
-                'slug' => 'keripik-sanjai-manis',
+                'name' => 'DESKTOPS',
+                'slug' => 'DESKTOPS',
                 'image' => null,
                 'is_active' => true,
             ],
             [
-                'name' => 'Keripik Sanjai Premium',
-                'slug' => 'keripik-sanjai-premium',
+                'name' => 'INTEL',
+                'slug' => 'INTEL',
                 'image' => null,
                 'is_active' => true,
             ],
             [
-                'name' => 'Paket Hemat',
-                'slug' => 'paket-hemat',
+                'name' => 'AMD',
+                'slug' => 'AMD',
                 'image' => null,
                 'is_active' => true,
             ],

@@ -3,9 +3,9 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             {{-- Brand --}}
             <div>
-                <h3 class="text-xl font-bold mb-4">Keripik Sanjai</h3>
+                <h3 class="text-xl font-bold mb-4">Rill Store</h3>
                 <p class="text-gray-400 text-sm">
-                    Keripik singkong khas Bukittinggi dengan cita rasa autentik dan kualitas terbaik.
+                    Quality You Can Trust, Price You'll Love
                 </p>
             </div>
 
@@ -27,7 +27,7 @@
                 <ul class="space-y-2 text-sm text-gray-400">
                     <li>📍 Bukittinggi, Sumatera Barat</li>
                     <li>📞 0869-6969-6969</li>
-                    <li>✉️ sanjai@rizky.com</li>
+                    <li>✉️ store@rill.com</li>
                 </ul>
             </div>
         </div>

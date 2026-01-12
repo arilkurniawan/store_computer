@@ -100,7 +100,7 @@
                     <div class="flex justify-between">
                         <span class="text-gray-600">No. Rekening</span>
                         <div class="flex items-center gap-2">
-                            <span class="font-medium font-mono text-lg">1234567890</span>
+                            <span class="font-medium font-mono text-lg">24 0154</span>
                             <button onclick="copyToClipboard('1234567890')" 
                                     class="text-amber-600 hover:text-amber-700 text-sm">
                                 📋 Copy
@@ -109,7 +109,7 @@
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Atas Nama</span>
-                        <span class="font-medium">Toko Keripik Sanjai</span>
+                        <span class="font-medium">Ariel Kurniawan</span>
                     </div>
                 </div>
                 

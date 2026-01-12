@@ -21,7 +21,7 @@ class BannerSeeder extends Seeder
                 'is_active' => true,
             ],
             [
-                'title' => 'Keripik Sanjai Asli Bukittinggi',
+                'title' => 'Buil Your Dream',
                 'image' => 'banners/banner-2.jpg',
                 'link' => '/products',
                 'order' => 2,

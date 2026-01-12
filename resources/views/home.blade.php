@@ -1,28 +1,27 @@
 @extends('layouts.app')
 
-@section('title', 'Keripik Sanjai - Oleh-oleh Khas Bukittinggi')
+@section('title', 'Rill Store')
 
 @section('content')
 
     {{-- HERO BANNER --}}
 <section
     class="relative h-screen bg-cover bg-center"
-    style="background-image: url('{{ asset('img/hero.jpeg') }}')"
+    style="background-image: url('{{ asset('img/hero2.jpg') }}')"
 >
     <!-- overlay gradasi -->
-    <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-black/5 to-black/15"></div>
 
     <!-- konten -->
     <div class="relative z-10 h-full flex items-center">
         <div class="max-w-3xl mx-auto px-6 text-center text-white">
             
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
-                Keripik Sanjai <span class="text-orange-400">Khas Minang</span>
+                Build Your <span class="text-orange-400">Dream Setup</span>
             </h1>
 
             <p class="mt-5 text-base md:text-lg text-gray-200 leading-relaxed">
-                Renyah, gurih, dan lezat. Oleh-oleh khas Sumatera Barat
-                dengan cita rasa autentik.
+                Customize your PC setup with powerful component and aesthetics
             </p>
 
             <div class="mt-8 flex justify-center">
@@ -33,7 +32,7 @@
                           px-8 py-4 rounded-full
                           shadow-lg hover:shadow-xl
                           transition duration-300">
-                    Belanja Sekarang
+                    Build Now
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M13 7l5 5m0 0l-5 5m5-5H6"/>

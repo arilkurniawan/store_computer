@@ -19,207 +19,163 @@ class ProductSeeder extends Seeder
 
         $products = [
             // ========================================
-            // KERIPIK SANJAI ORIGINAL
+            // ASUS (Laptop)
             // ========================================
             [
-                'category' => 'keripik-sanjai-original',
-                'name' => 'Keripik Sanjai Original 100g',
-                'slug' => 'keripik-sanjai-original-100g',
-                'description' => 'Keripik sanjai original dengan bumbu gurih khas Bukittinggi. Terbuat dari singkong pilihan yang diiris tipis dan digoreng hingga renyah. Kemasan praktis 100 gram.',
-                'price' => 15000,
-                'stock' => 100,
-                'image' => null,
-                'is_active' => true,
-                'is_recommended' => true,
-            ],
-            [
-                'category' => 'keripik-sanjai-original',
-                'name' => 'Keripik Sanjai Original 250g',
-                'slug' => 'keripik-sanjai-original-250g',
-                'description' => 'Keripik sanjai original ukuran keluarga. Pas untuk dinikmati bersama keluarga di rumah. Kemasan 250 gram.',
-                'price' => 35000,
-                'stock' => 75,
-                'image' => null,
-                'is_active' => true,
-                'is_recommended' => false,
-            ],
-            [
-                'category' => 'keripik-sanjai-original',
-                'name' => 'Keripik Sanjai Original 500g',
-                'slug' => 'keripik-sanjai-original-500g',
-                'description' => 'Keripik sanjai original kemasan besar. Hemat dan cocok untuk stok camilan di rumah. Kemasan 500 gram.',
-                'price' => 65000,
-                'stock' => 50,
-                'image' => null,
-                'is_active' => true,
-                'is_recommended' => false,
-            ],
-
-            // ========================================
-            // KERIPIK SANJAI BALADO
-            // ========================================
-            [
-                'category' => 'keripik-sanjai-balado',
-                'name' => 'Keripik Sanjai Balado Merah 100g',
-                'slug' => 'keripik-sanjai-balado-merah-100g',
-                'description' => 'Keripik sanjai dengan bumbu balado merah pedas yang menggugah selera. Level pedas sedang, cocok untuk pecinta pedas.',
-                'price' => 18000,
-                'stock' => 80,
-                'image' => null,
-                'is_active' => true,
-                'is_recommended' => true,
-            ],
-            [
-                'category' => 'keripik-sanjai-balado',
-                'name' => 'Keripik Sanjai Balado Hijau 100g',
-                'slug' => 'keripik-sanjai-balado-hijau-100g',
-                'description' => 'Keripik sanjai dengan bumbu balado hijau yang segar dan pedas. Aroma cabai hijau yang khas.',
-                'price' => 18000,
-                'stock' => 70,
-                'image' => null,
-                'is_active' => true,
-                'is_recommended' => true,
-            ],
-            [
-                'category' => 'keripik-sanjai-balado',
-                'name' => 'Keripik Sanjai Super Pedas 100g',
-                'slug' => 'keripik-sanjai-super-pedas-100g',
-                'description' => 'Khusus pecinta pedas sejati! Keripik sanjai dengan level pedas maksimal. Hati-hati, sangat pedas!',
-                'price' => 20000,
-                'stock' => 60,
-                'image' => null,
-                'is_active' => true,
-                'is_recommended' => false,
-            ],
-            [
-                'category' => 'keripik-sanjai-balado',
-                'name' => 'Keripik Sanjai Balado 250g',
-                'slug' => 'keripik-sanjai-balado-250g',
-                'description' => 'Keripik sanjai balado ukuran keluarga. Perpaduan rasa pedas dan gurih yang pas.',
-                'price' => 40000,
-                'stock' => 55,
-                'image' => null,
-                'is_active' => true,
-                'is_recommended' => false,
-            ],
-
-            // ========================================
-            // KERIPIK SANJAI MANIS
-            // ========================================
-            [
-                'category' => 'keripik-sanjai-manis',
-                'name' => 'Keripik Sanjai Manis 100g',
-                'slug' => 'keripik-sanjai-manis-100g',
-                'description' => 'Keripik sanjai dengan lapisan gula aren yang manis legit. Perpaduan renyah dan manis yang sempurna.',
-                'price' => 17000,
-                'stock' => 65,
-                'image' => null,
-                'is_active' => true,
-                'is_recommended' => true,
-            ],
-            [
-                'category' => 'keripik-sanjai-manis',
-                'name' => 'Keripik Sanjai Cokelat 100g',
-                'slug' => 'keripik-sanjai-cokelat-100g',
-                'description' => 'Keripik sanjai dengan topping cokelat premium. Inovasi baru yang disukai anak-anak.',
-                'price' => 22000,
-                'stock' => 45,
-                'image' => null,
-                'is_active' => true,
-                'is_recommended' => false,
-            ],
-            [
-                'category' => 'keripik-sanjai-manis',
-                'name' => 'Keripik Sanjai Karamel 100g',
-                'slug' => 'keripik-sanjai-karamel-100g',
-                'description' => 'Keripik sanjai dengan karamel creamy yang lezat. Tekstur renyah dengan rasa karamel yang meleleh.',
-                'price' => 20000,
-                'stock' => 40,
-                'image' => null,
-                'is_active' => true,
-                'is_recommended' => false,
-            ],
-
-            // ========================================
-            // KERIPIK SANJAI PREMIUM
-            // ========================================
-            [
-                'category' => 'keripik-sanjai-premium',
-                'name' => 'Keripik Sanjai Premium Gift Box',
-                'slug' => 'keripik-sanjai-premium-gift-box',
-                'description' => 'Kemasan premium dalam gift box eksklusif. Berisi 3 varian rasa (Original, Balado, Manis) masing-masing 100g. Cocok untuk oleh-oleh atau hadiah.',
-                'price' => 75000,
-                'stock' => 30,
-                'image' => null,
-                'is_active' => true,
-                'is_recommended' => true,
-            ],
-            [
-                'category' => 'keripik-sanjai-premium',
-                'name' => 'Keripik Sanjai Premium Jar',
-                'slug' => 'keripik-sanjai-premium-jar',
-                'description' => 'Keripik sanjai original dalam kemasan jar kaca premium. Elegan dan tahan lama. Berat bersih 200g.',
-                'price' => 55000,
-                'stock' => 25,
-                'image' => null,
-                'is_active' => true,
-                'is_recommended' => false,
-            ],
-            [
-                'category' => 'keripik-sanjai-premium',
-                'name' => 'Keripik Sanjai Exclusive Hampers',
-                'slug' => 'keripik-sanjai-exclusive-hampers',
-                'description' => 'Hampers eksklusif berisi 5 varian keripik sanjai terbaik. Kemasan mewah dengan pita dan kartu ucapan. Perfect gift!',
-                'price' => 150000,
+                'category' => 'ASUS',
+                'name' => 'ASUS VivoBook 14 (Ryzen 5, RAM 8GB, SSD 512GB)',
+                'slug' => 'asus-vivobook-14-ryzen5-8gb-512gb',
+                'description' => 'Laptop ringan untuk kerja/kuliah. Ryzen 5, RAM 8GB, SSD 512GB. Layar 14", cocok untuk produktivitas harian.',
+                'price' => 7499000,
                 'stock' => 15,
                 'image' => null,
                 'is_active' => true,
                 'is_recommended' => true,
             ],
-
-            // ========================================
-            // PAKET HEMAT
-            // ========================================
             [
-                'category' => 'paket-hemat',
-                'name' => 'Paket Hemat 3 in 1',
-                'slug' => 'paket-hemat-3-in-1',
-                'description' => 'Paket hemat berisi 3 bungkus keripik sanjai (Original, Balado Merah, Manis) masing-masing 100g. Hemat Rp 10.000!',
-                'price' => 45000,
-                'stock' => 40,
+                'category' => 'ASUS',
+                'name' => 'ASUS TUF Gaming F15 (i5, RAM 16GB, SSD 512GB)',
+                'slug' => 'asus-tuf-gaming-f15-i5-16gb-512gb',
+                'description' => 'Laptop gaming tangguh untuk game & desain. Intel Core i5, RAM 16GB, SSD 512GB. Cocok untuk gaming 1080p.',
+                'price' => 15499000,
+                'stock' => 6,
                 'image' => null,
                 'is_active' => true,
                 'is_recommended' => true,
             ],
             [
-                'category' => 'paket-hemat',
-                'name' => 'Paket Hemat Balado Lovers',
-                'slug' => 'paket-hemat-balado-lovers',
-                'description' => 'Khusus pecinta balado! Berisi 3 bungkus keripik sanjai balado (Merah, Hijau, Super Pedas) masing-masing 100g.',
-                'price' => 50000,
-                'stock' => 35,
+                'category' => 'ASUS',
+                'name' => 'ASUS ZenBook 14 (i7, RAM 16GB, SSD 1TB)',
+                'slug' => 'asus-zenbook-14-i7-16gb-1tb',
+                'description' => 'Laptop premium tipis dan ringan. Intel Core i7, RAM 16GB, SSD 1TB. Cocok untuk profesional dan mobilitas tinggi.',
+                'price' => 18999000,
+                'stock' => 4,
+                'image' => null,
+                'is_active' => true,
+                'is_recommended' => false,
+            ],
+
+            // ========================================
+            // LENOVO (Laptop)
+            // ========================================
+            [
+                'category' => 'LENOVO',
+                'name' => 'Lenovo IdeaPad Slim 3 (i5, RAM 8GB, SSD 512GB)',
+                'slug' => 'lenovo-ideapad-slim-3-i5-8gb-512gb',
+                'description' => 'Laptop harian untuk tugas dan kerja. Intel Core i5, RAM 8GB, SSD 512GB. Build solid dan nyaman dipakai.',
+                'price' => 7299000,
+                'stock' => 12,
+                'image' => null,
+                'is_active' => true,
+                'is_recommended' => true,
+            ],
+            [
+                'category' => 'LENOVO',
+                'name' => 'Lenovo ThinkPad (i5, RAM 16GB, SSD 512GB)',
+                'slug' => 'lenovo-thinkpad-i5-16gb-512gb',
+                'description' => 'Laptop bisnis dengan keyboard nyaman dan durability tinggi. i5, RAM 16GB, SSD 512GB. Cocok untuk kantor.',
+                'price' => 13499000,
+                'stock' => 7,
                 'image' => null,
                 'is_active' => true,
                 'is_recommended' => false,
             ],
             [
-                'category' => 'paket-hemat',
-                'name' => 'Paket Keluarga 1kg',
-                'slug' => 'paket-keluarga-1kg',
-                'description' => 'Paket super hemat 1 kilogram keripik sanjai original. Cocok untuk stok bulanan keluarga.',
-                'price' => 120000,
+                'category' => 'LENOVO',
+                'name' => 'Lenovo Legion 5 (Ryzen 7, RAM 16GB, SSD 1TB)',
+                'slug' => 'lenovo-legion-5-ryzen7-16gb-1tb',
+                'description' => 'Laptop gaming/performa tinggi. Ryzen 7, RAM 16GB, SSD 1TB. Cocok untuk editing dan gaming serius.',
+                'price' => 20999000,
+                'stock' => 3,
+                'image' => null,
+                'is_active' => true,
+                'is_recommended' => true,
+            ],
+
+            // ========================================
+            // DESKTOPS (PC)
+            // ========================================
+            [
+                'category' => 'DESKTOPS',
+                'name' => 'PC Office (i3, RAM 8GB, SSD 256GB)',
+                'slug' => 'pc-office-i3-8gb-256gb',
+                'description' => 'PC desktop untuk kebutuhan kantor dan sekolah. Intel Core i3, RAM 8GB, SSD 256GB. Kencang untuk aplikasi kerja.',
+                'price' => 4699000,
+                'stock' => 10,
+                'image' => null,
+                'is_active' => true,
+                'is_recommended' => true,
+            ],
+            [
+                'category' => 'DESKTOPS',
+                'name' => 'PC Gaming Entry (Ryzen 5, RAM 16GB, SSD 512GB)',
+                'slug' => 'pc-gaming-entry-ryzen5-16gb-512gb',
+                'description' => 'PC rakitan untuk gaming 1080p entry-level. Ryzen 5, RAM 16GB, SSD 512GB. (VGA bisa menyesuaikan paket).',
+                'price' => 8499000,
+                'stock' => 6,
+                'image' => null,
+                'is_active' => true,
+                'is_recommended' => true,
+            ],
+            [
+                'category' => 'DESKTOPS',
+                'name' => 'PC Creator (i7, RAM 32GB, SSD 1TB)',
+                'slug' => 'pc-creator-i7-32gb-1tb',
+                'description' => 'PC untuk editing dan rendering. Intel Core i7, RAM 32GB, SSD 1TB. Cocok untuk kerja kreatif.',
+                'price' => 15999000,
+                'stock' => 2,
+                'image' => null,
+                'is_active' => true,
+                'is_recommended' => false,
+            ],
+
+            // ========================================
+            // INTEL (Processor)
+            // ========================================
+            [
+                'category' => 'INTEL',
+                'name' => 'Intel Core i5-12400F',
+                'slug' => 'intel-core-i5-12400f',
+                'description' => 'Processor Intel Core i5-12400F. Cocok untuk gaming dan produktivitas. Catatan: seri F tidak memiliki iGPU.',
+                'price' => 2399000,
+                'stock' => 25,
+                'image' => null,
+                'is_active' => true,
+                'is_recommended' => true,
+            ],
+            [
+                'category' => 'INTEL',
+                'name' => 'Intel Core i7-12700K',
+                'slug' => 'intel-core-i7-12700k',
+                'description' => 'Processor Intel Core i7-12700K untuk performa tinggi. Cocok untuk creator dan gamer yang butuh tenaga lebih.',
+                'price' => 5299000,
+                'stock' => 10,
+                'image' => null,
+                'is_active' => true,
+                'is_recommended' => false,
+            ],
+
+            // ========================================
+            // AMD (Processor)
+            // ========================================
+            [
+                'category' => 'AMD',
+                'name' => 'AMD Ryzen 5 5600G',
+                'slug' => 'amd-ryzen-5-5600g',
+                'description' => 'Processor AMD Ryzen 5 5600G dengan iGPU. Cocok untuk rakitan hemat tanpa VGA dedicated.',
+                'price' => 1899000,
                 'stock' => 20,
                 'image' => null,
                 'is_active' => true,
-                'is_recommended' => false,
+                'is_recommended' => true,
             ],
             [
-                'category' => 'paket-hemat',
-                'name' => 'Paket Reseller',
-                'slug' => 'paket-reseller',
-                'description' => 'Paket khusus reseller berisi 10 bungkus keripik sanjai original 100g. Harga spesial untuk reseller.',
-                'price' => 130000,
-                'stock' => 25,
+                'category' => 'AMD',
+                'name' => 'AMD Ryzen 7 5800X',
+                'slug' => 'amd-ryzen-7-5800x',
+                'description' => 'Processor AMD Ryzen 7 5800X untuk performa tinggi. Cocok untuk gaming dan pekerjaan berat.',
+                'price' => 3499000,
+                'stock' => 12,
                 'image' => null,
                 'is_active' => true,
                 'is_recommended' => false,
@@ -227,6 +183,7 @@ class ProductSeeder extends Seeder
         ];
 
         $count = 0;
+
         foreach ($products as $productData) {
             $categorySlug = $productData['category'];
             unset($productData['category']);
@@ -234,6 +191,7 @@ class ProductSeeder extends Seeder
             if (isset($categories[$categorySlug])) {
                 $productData['category_id'] = $categories[$categorySlug]->id;
                 Product::create($productData);
+
                 $count++;
             }
         }
