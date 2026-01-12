@@ -106,7 +106,9 @@ class ProductResource extends Resource
                                 Forms\Components\FileUpload::make('image')
                                     ->label('Gambar Produk')
                                     ->image()
+                                    ->disk('public') 
                                     ->directory('products')
+                                    ->visibility('public') 
                                     ->imageResizeMode('cover')
                                     ->imageCropAspectRatio('1:1')
                                     ->imageResizeTargetWidth('500')
@@ -137,6 +139,7 @@ class ProductResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
                     ->label('Gambar')
+                    ->disk('public')
                     ->square(),
 
                 Tables\Columns\TextColumn::make('name')

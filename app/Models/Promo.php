@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
 
 class Promo extends Model
@@ -23,5 +24,10 @@ class Promo extends Model
     public function getDiscountAmountAttribute()
     {
         return $this->discount;
+    }
+
+        public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 }

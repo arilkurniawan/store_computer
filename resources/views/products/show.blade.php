@@ -16,7 +16,7 @@
                 <img 
                     src="{{ asset('storage/' . $product->image) }}" 
                     alt="{{ $product->name }}" 
-                    class="w-full h-96 object-cover"
+                    class="w-full h-auto object-contain max-h-[500px]"
                 >
             @else
                 <div class="w-full h-96 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
@@ -62,9 +62,12 @@
             {{-- Description --}}
             <div class="border-t pt-6">
                 <h3 class="font-semibold text-gray-800 mb-2">Deskripsi</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    {{ $product->description ?? 'Tidak ada deskripsi.' }}
-                </p>
+
+                @if($product->description)
+                    {!! $product->description !!}
+                @else
+                    <p class="text-gray-600">Tidak ada deskripsi.</p>
+                @endif
             </div>
 
             {{-- Add to Cart Form --}}

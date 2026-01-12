@@ -12,16 +12,16 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'promo_id',
-        'invoice',  // ⭐ Sesuai database
+        'invoice',
         'subtotal',
         'discount',
-        'total',    // ⭐ Sesuai database
+        'total',
         'status',
         'shipping_name',
         'shipping_phone',
         'shipping_address',
-        'shipping_city',        // ⭐ TAMBAHAN
-        'shipping_postal_code', // ⭐ TAMBAHAN
+        'shipping_city',
+        'shipping_postal_code',
         'shipping_province',
         'payment_proof',
         'notes',
