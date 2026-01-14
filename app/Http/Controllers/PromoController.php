@@ -46,7 +46,6 @@ class PromoController extends Controller
 
         return response()->json([
             'valid' => true,
-            'message' => 'Kode promo berhasil diterapkan! 🎉',
             'promo' => [
                 'id' => $promo->id,
                 'code' => $promo->code,
@@ -60,7 +59,7 @@ class PromoController extends Controller
     }
 
     /**
-     * Get all active promo codes (optional - for admin or display)
+     * Get all active promo codes 
      * 
      * @return \Illuminate\Http\JsonResponse
      */

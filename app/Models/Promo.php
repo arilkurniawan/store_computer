@@ -30,4 +30,9 @@ class Promo extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    public function getFormattedDiscountAttribute(): string
+    {
+        return 'Rp ' . number_format((int) $this->discount, 0, ',', '.');
+    }
 }

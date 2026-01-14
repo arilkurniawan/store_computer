@@ -34,27 +34,27 @@
                 {{-- Form Pengiriman --}}
                 {{-- ================================ --}}
                 <div class="bg-white rounded-lg shadow p-6">
-                    <h2 class="text-lg font-bold mb-4">📍 Alamat Pengiriman</h2>
+                    <h2 class="text-lg font-bold mb-4">📍 Shipping Address</h2>
 
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium mb-1">Nama Penerima *</label>
+                            <label class="block text-sm font-medium mb-1">Recipient Name *</label>
                             <input type="text" name="shipping_name" value="{{ old('shipping_name', auth()->user()->name) }}" required
                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium mb-1">No. Telepon *</label>
+                            <label class="block text-sm font-medium mb-1">Phone Number *</label>
                             <input type="text" name="shipping_phone" value="{{ old('shipping_phone') }}" required
                                    placeholder="08xxxxxxxxxx"
                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium mb-1">Provinsi *</label>
+                            <label class="block text-sm font-medium mb-1">Province *</label>
                             <select name="shipping_province" required
                                     class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
-                                <option value="">-- Pilih Provinsi --</option>
+                                <option value="">-- Select Province --</option>
                                 <option value="Sumatera Barat" {{ old('shipping_province') == 'Sumatera Barat' ? 'selected' : '' }}>Sumatera Barat</option>
                                 <option value="DKI Jakarta" {{ old('shipping_province') == 'DKI Jakarta' ? 'selected' : '' }}>DKI Jakarta</option>
                                 <option value="Jawa Barat" {{ old('shipping_province') == 'Jawa Barat' ? 'selected' : '' }}>Jawa Barat</option>
@@ -68,30 +68,30 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium mb-1">Kota/Kabupaten *</label>
+                            <label class="block text-sm font-medium mb-1">City *</label>
                             <input type="text" name="shipping_city" value="{{ old('shipping_city') }}" required
-                                   placeholder="Contoh: Bukittinggi"
+                                   placeholder="Example: Bukittinggi"
                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium mb-1">Kode Pos *</label>
+                            <label class="block text-sm font-medium mb-1">Post Code *</label>
                             <input type="text" name="shipping_postal_code" value="{{ old('shipping_postal_code') }}" required
-                                   placeholder="Contoh: 26111"
+                                   placeholder="Example: 26111"
                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium mb-1">Alamat Lengkap *</label>
+                            <label class="block text-sm font-medium mb-1">Full Address *</label>
                             <textarea name="shipping_address" rows="3" required
-                                      placeholder="Nama jalan, nomor rumah, RT/RW, kelurahan, kecamatan"
+                                      placeholder="Street name, house number, district, city"
                                       class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">{{ old('shipping_address') }}</textarea>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium mb-1">Catatan (Opsional)</label>
+                            <label class="block text-sm font-medium mb-1">Notes (Opsional)</label>
                             <textarea name="notes" rows="2"
-                                      placeholder="Contoh: Rumah warna biru, dekat masjid"
+                                      placeholder="e.g. Blue house near the mosque"
                                       class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">{{ old('notes') }}</textarea>
                         </div>
                     </div>
@@ -102,7 +102,7 @@
                 {{-- ================================ --}}
                 <div>
                     <div class="bg-white rounded-lg shadow p-6 mb-4">
-                        <h2 class="text-lg font-bold mb-4">📦 Ringkasan Pesanan</h2>
+                        <h2 class="text-lg font-bold mb-4">📦 Order Summary</h2>
 
                         {{-- Cart Items --}}
                         <div class="space-y-3 mb-4">
@@ -121,14 +121,14 @@
                         {{-- PROMO CODE WITH AJAX VALIDATION --}}
                         {{-- ================================ --}}
                         <div class="mb-4">
-                            <label class="block text-sm font-medium mb-1">🎟️ Kode Promo</label>
+                            <label class="block text-sm font-medium mb-1">🎟️ Promo Code</label>
                             <div class="flex gap-2">
                                 <div class="flex-1 relative">
                                     <input type="text" 
                                            name="promo_code" 
                                            x-model="promoCode"
                                            @input="resetPromo()"
-                                           placeholder="Masukkan kode promo"
+                                           placeholder="Enter promo code"
                                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 uppercase"
                                            :class="{ 
                                                'border-green-500 bg-green-50': promoValid === true,
@@ -160,7 +160,7 @@
                                         @click="validatePromo()"
                                         :disabled="promoLoading || promoCode.length < 3"
                                         class="bg-amber-500 hover:bg-amber-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg transition font-medium">
-                                    <span x-show="!promoLoading">Pakai</span>
+                                    <span x-show="!promoLoading">Apply</span>
                                     <span x-show="promoLoading">...</span>
                                 </button>
                                 
@@ -168,7 +168,7 @@
                                         x-show="promoApplied"
                                         @click="removePromo()"
                                         class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition font-medium">
-                                    Hapus
+                                    Delete
                                 </button>
                             </div>
                             
@@ -183,7 +183,7 @@
                             {{-- Available Promo Codes Hint --}}
                             <p class="text-xs text-gray-500 mt-2">
                                 💡 Coba: <span class="font-mono bg-gray-100 px-1 rounded cursor-pointer hover:bg-amber-100" @click="promoCode = 'WELCOME10'">WELCOME10</span>, 
-                                <span class="font-mono bg-gray-100 px-1 rounded cursor-pointer hover:bg-amber-100" @click="promoCode = 'SANJAI20'">SANJAI20</span>, 
+                                <span class="font-mono bg-gray-100 px-1 rounded cursor-pointer hover:bg-amber-100" @click="promoCode = 'GAMING'">GAMING</span>, 
                                 <span class="font-mono bg-gray-100 px-1 rounded cursor-pointer hover:bg-amber-100" @click="promoCode = 'BUKITTINGGI'">BUKITTINGGI</span>
                             </p>
                         </div>
@@ -201,13 +201,13 @@
                             
                             {{-- Discount Row (Dynamic) --}}
                             <div class="flex justify-between text-green-600" x-show="discount > 0" x-transition>
-                                <span>Diskon (<span x-text="promoCode"></span>)</span>
+                                <span>Discount (<span x-text="promoCode"></span>)</span>
                                 <span>- Rp <span x-text="formatNumber(discount)"></span></span>
                             </div>
                             
                             <div class="flex justify-between">
-                                <span class="text-gray-600">Ongkir</span>
-                                <span class="text-green-600">GRATIS</span>
+                                <span class="text-gray-600">Shipping</span>
+                                <span class="text-green-600">FREE</span>
                             </div>
                             
                             <hr>
@@ -221,7 +221,7 @@
                             <div x-show="discount > 0" x-transition 
                                  class="bg-green-50 border border-green-200 rounded-lg p-3 mt-2">
                                 <p class="text-green-700 text-sm font-medium">
-                                    🎉 Yeay! Kamu hemat Rp <span x-text="formatNumber(discount)"></span>
+                                    🎉 Yay! You saved Rp <span x-text="formatNumber(discount)"></span>
                                 </p>
                             </div>
                         </div>
@@ -233,16 +233,16 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
                         </svg>
-                        BUAT PESANAN
+                        CONFIRM ORDER
                     </button>
 
                     <p class="text-center text-sm text-gray-500 mt-3">
-                        Dengan memesan, Anda menyetujui syarat & ketentuan kami
+                        By placing your order, you agree to our Terms & Conditions.
                     </p>
                     
                     {{-- Back to Cart --}}
                     <a href="{{ route('cart.index') }}" class="block text-center text-gray-600 hover:text-amber-600 mt-4">
-                        ← Kembali ke Keranjang
+                        ← Back to Cart
                     </a>
                 </div>
             </div>

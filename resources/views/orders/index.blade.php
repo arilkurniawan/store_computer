@@ -8,8 +8,8 @@
         
         {{-- Header --}}
         <div class="mb-6">
-            <h1 class="text-2xl font-bold">📦 Pesanan Saya</h1>
-            <p class="text-gray-600">Riwayat semua pesanan Anda</p>
+            <h1 class="text-2xl font-bold">📦 My Orders</h1>
+            <p class="text-gray-600">Order History</p>
         </div>
 
         {{-- Flash Message --}}
@@ -30,14 +30,15 @@
                     </div>
                     <span class="px-3 py-1 rounded-full text-sm font-medium
                         @if($order->status == 'pending') bg-yellow-100 text-yellow-800
-                        @elseif($order->status == 'confirmed') bg-blue-100 text-blue-800
+                        @elseif($order->status == 'waiting_confirmation') bg-blue-100 text-blue-800
                         @elseif($order->status == 'processing') bg-purple-100 text-purple-800
                         @elseif($order->status == 'shipped') bg-indigo-100 text-indigo-800
                         @elseif($order->status == 'completed') bg-green-100 text-green-800
                         @elseif($order->status == 'cancelled') bg-red-100 text-red-800
                         @else bg-gray-100 text-gray-800
                         @endif">
-                        {{ ucfirst($order->status) }}
+                        {{ \App\Models\Order::getStatuses()[$order->status] ?? \Illuminate\Support\Str::headline($order->status) }}
+
                     </span>
                 </div>
 
@@ -75,10 +76,10 @@
         @empty
             <div class="bg-white rounded-lg shadow p-8 text-center">
                 <div class="text-6xl mb-4">📭</div>
-                <h3 class="text-xl font-bold mb-2">Belum Ada Pesanan</h3>
-                <p class="text-gray-600 mb-4">Anda belum pernah melakukan pemesanan</p>
+                <h3 class="text-xl font-bold mb-2">No orders yet</h3>
+                <p class="text-gray-600 mb-4">You haven't placed any orders yet</p>
                 <a href="{{ route('home') }}" class="inline-block bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-lg">
-                    Belanja Sekarang
+                    Shop now
                 </a>
             </div>
         @endforelse
@@ -93,7 +94,7 @@
         {{-- Back Button --}}
         <div class="mt-6 text-center">
             <a href="{{ route('home') }}" class="text-gray-600 hover:underline">
-                ← Kembali ke Beranda
+                ← Back to Home
             </a>
         </div>
 

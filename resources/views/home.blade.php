@@ -67,7 +67,7 @@
                 <!-- Overlay halus -->
                 <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition"></div>
 
-                <!-- Optional title (jika ada) -->
+                <!-- title  -->
                 @if(!empty($banner->title))
                 <div class="absolute bottom-4 left-4 right-4 text-white">
                     <h3 class="text-lg font-semibold drop-shadow">
@@ -86,16 +86,16 @@
 
 
     {{-- KATEGORI --}}
-<section class="pt-8 pb-10 bg-gray-50">
+<section class="pt-4 pb-4 bg-gray-50">
     <div class="max-w-screen-xl mx-auto px-2 md:px-3">
 
         <!-- Judul section -->
         <div class="text-center mb-6">
             <h2 class="text-2xl md:text-3xl font-bold text-gray-800">
-                Kategori Produk
+                Product Category
             </h2>
             <p class="text-gray-500 mt-2">
-                Temukan produk sesuai kategori pilihanmu
+                Shop By Category
             </p>
         </div>
 
@@ -130,16 +130,16 @@
 </section>
 
     {{-- PRODUK REKOMENDASI --}}
-<section class="pt-8 pb-4 bg-gray-50">
+<section class="pt-4 pb-4 bg-gray-50">
     <div class="max-w-screen-xl mx-auto px-2 md:px-3">
 
         <!-- Judul section -->
         <div class="text-center mb-6">
             <h2 class="text-2xl md:text-3xl font-bold text-gray-800">
-                Produk Rekomendasi
+                Recommended Products
             </h2>
             <p class="text-gray-500 mt-2">
-                Pilihan terbaik dan favorit pelanggan
+                Best picks for you
             </p>
         </div>
 
@@ -155,7 +155,7 @@
                 <div class="relative overflow-hidden">
                     <img src="{{ $product->image 
                             ? asset('storage/' . $product->image) 
-                            : 'https://placehold.co/400x300/orange/white?text=Keripik' }}"
+                            : 'https://placehold.co/400x300/orange/white?text=Store' }}"
                          alt="{{ $product->name }}"
                          class="w-full h-48 object-cover
                                 transform group-hover:scale-105
@@ -199,7 +199,7 @@
         <div class="mt-4 text-center">
             <br>
                 <a href="{{ route('products.index') }}" class="bg-orange-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-orange-700 transition">
-                    Lihat Semua Produk
+                    View All Products
                 </a>
         </div>
     </div>

@@ -16,7 +16,7 @@ class PromoSeeder extends Seeder
                 'is_active' => true,
             ],
             [
-                'code' => 'SANJAI20',
+                'code' => 'GAMING',
                 'discount' => 20000,
                 'is_active' => true,
             ],

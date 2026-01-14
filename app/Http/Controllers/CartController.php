@@ -61,7 +61,6 @@ class CartController extends Controller
             }
 
             $cart->update(['quantity' => $newQuantity]);
-            $message = 'Jumlah produk di keranjang diperbarui.';
         } else {
             // Buat baru
             Cart::create([
@@ -69,19 +68,17 @@ class CartController extends Controller
                 'product_id' => $product->id,
                 'quantity' => $request->quantity,
             ]);
-            $message = 'Produk berhasil ditambahkan ke keranjang.';
         }
 
         // Cek apakah request AJAX
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
-                'message' => $message,
                 'cart_count' => Auth::user()->cart_count,
             ]);
         }
 
-        return back()->with('success', $message);
+        return back()->with('success');
     }
 
     /**
@@ -114,7 +111,6 @@ class CartController extends Controller
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Keranjang diperbarui.',
                 'subtotal' => $cart->subtotal,
                 'formatted_subtotal' => $cart->formatted_subtotal,
                 'cart_count' => Auth::user()->fresh()->cart_count,

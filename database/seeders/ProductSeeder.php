@@ -191,7 +191,6 @@ class ProductSeeder extends Seeder
             if (isset($categories[$categorySlug])) {
                 $productData['category_id'] = $categories[$categorySlug]->id;
                 Product::create($productData);
-
                 $count++;
             }
         }

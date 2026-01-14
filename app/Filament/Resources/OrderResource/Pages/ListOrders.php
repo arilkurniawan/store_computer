@@ -27,12 +27,16 @@ class ListOrders extends ListRecords
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'pending'))
                 ->badge(fn () => \App\Models\Order::where('status', 'pending')->count())
                 ->badgeColor('warning'),
-            'paid' => Tab::make('Sudah Bayar')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'paid'))
-                ->badge(fn () => \App\Models\Order::where('status', 'paid')->count())
+            'waiting_confirmation' => Tab::make('Menunggu Konfirmasi')
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'waiting_confirmation'))
+                ->badge(fn () => \App\Models\Order::where('status', 'waiting_confirmation')->count())
                 ->badgeColor('info'),
+            'confirmed' => Tab::make('Terkonfirmasi')
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'confirmed'))
+                ->badge(fn () => \App\Models\Order::where('status', 'confirmed')->count())
+                ->badgeColor('success'),
             'processing' => Tab::make('Diproses')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'processing'))
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'processing'))    
                 ->badge(fn () => \App\Models\Order::where('status', 'processing')->count())
                 ->badgeColor('primary'),
             'shipped' => Tab::make('Dikirim')

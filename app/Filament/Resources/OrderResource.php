@@ -27,7 +27,7 @@ class OrderResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::where('status', 'pending')->count() ?: null;
+        return static::getModel()::where('status', 'waiting_confirmation')->count() ?: null;
     }
 
     public static function getNavigationBadgeColor(): ?string
@@ -142,7 +142,7 @@ class OrderResource extends Resource
                             ->schema([
                                 Forms\Components\Placeholder::make('promo_code')
                                     ->label('Kode Promo')
-                                    ->content(fn (Order $record): string => $record->promo->code ?? '-'),
+                                    ->content(fn (Order $record): string => $record->promo?->formatted_discount ?? '-'),
 
                                 Forms\Components\Placeholder::make('promo_discount')
                                     ->label('Potongan')
@@ -182,7 +182,7 @@ class OrderResource extends Resource
                     ->formatStateUsing(fn (string $state): string => Order::getStatuses()[$state] ?? $state)
                     ->color(fn (string $state): string => match($state) {
                         'pending' => 'warning',
-                        'paid' => 'info',
+                        'waiting_confirmation' => 'info',
                         'processing' => 'primary',
                         'shipped' => 'info',
                         'completed' => 'success',
@@ -233,19 +233,11 @@ class OrderResource extends Resource
                     Tables\Actions\EditAction::make(),
 
                     // Quick Status Actions
-                    Tables\Actions\Action::make('markAsPaid')
-                        ->label('Tandai Sudah Bayar')
+                    Tables\Actions\Action::make('confirmPayment')
+                        ->label('Payment Confirmation')
                         ->icon('heroicon-o-banknotes')
                         ->color('success')
-                        ->visible(fn (Order $record) => $record->status === 'pending' && $record->payment_proof)
-                        ->requiresConfirmation()
-                        ->action(fn (Order $record) => $record->update(['status' => 'paid'])),
-
-                    Tables\Actions\Action::make('markAsProcessing')
-                        ->label('Proses Pesanan')
-                        ->icon('heroicon-o-cog-6-tooth')
-                        ->color('primary')
-                        ->visible(fn (Order $record) => $record->status === 'paid')
+                        ->visible(fn (Order $record) => $record->status === 'waiting_confirmation' && $record->payment_proof)
                         ->requiresConfirmation()
                         ->action(fn (Order $record) => $record->update(['status' => 'processing'])),
 
@@ -269,7 +261,7 @@ class OrderResource extends Resource
                         ->label('Batalkan')
                         ->icon('heroicon-o-x-circle')
                         ->color('danger')
-                        ->visible(fn (Order $record) => in_array($record->status, ['pending', 'paid']))
+                        ->visible(fn (Order $record) => in_array($record->status, ['pending', 'waiting_confirmation', 'confirmed']))
                         ->requiresConfirmation()
                         ->action(fn (Order $record) => $record->update(['status' => 'cancelled'])),
                 ]),

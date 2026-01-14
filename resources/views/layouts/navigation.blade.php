@@ -4,7 +4,9 @@
         <div class="flex items-center justify-between h-16 ">
             {{-- Logo --}}
             <a href="/" class="flex-shrink-0">
-                <img src="{{ asset('img/logo.png') }}" alt="logo" class="h-max w-auto max-w-[110px] object-contain">
+                <img src="{{ asset('img/logo.png') }}" alt="logo" width="110" height="40" class="h-10 w-auto object-contain" loading="eager" decoding="async"
+/>
+
             </a>
 
             {{-- Search Bar (BARU) --}}
@@ -16,7 +18,7 @@
                             @input.debounce.300ms="search()"
                             @focus="showResults = true"
                             @keydown.escape="closeSearch()"
-                            placeholder="Cari produk..." 
+                            placeholder="Search Products..." 
                             class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm">
                         {{-- Search Icon / Loading --}}
                         <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -126,11 +128,10 @@
                         @php
                             $cartCount = \App\Models\Cart::where('user_id', auth()->id())->sum('quantity');
                         @endphp
-                        @if($cartCount > 0)
-                            <span class="absolute -top-2 -right-3 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                                {{ $cartCount }}
-                            </span>
-                        @endif
+
+                        <span id="cart-count-badge" class="absolute -top-2 -right-3 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center {{ $cartCount > 0 ? '' : 'hidden' }}">
+                            {{ $cartCount > 0 ? $cartCount : '' }}
+                        </span>
                     </a>
 
                     <span class="text-gray-400">|</span>

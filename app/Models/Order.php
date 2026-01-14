@@ -50,7 +50,7 @@ public static function getStatuses(): array
 {
     return [
         'pending' => 'Pending',
-        'confirmed' => 'Confirmed',
+        'waiting_confirmation' => 'Waiting Confirmation',
         'processing' => 'Processing',
         'shipped' => 'Shipped',
         'completed' => 'Completed',
