@@ -82,7 +82,7 @@
                     <div class="flex justify-end">
                         <button 
                             type="submit"
-                            class="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 px-6 rounded-lg transition"
+                            class="bg-oranger-500 hover:bg-oranger-600 text-white font-semibold py-3 px-6 rounded-lg transition"
                         >
                             Simpan Perubahan
                         </button>

@@ -8,7 +8,7 @@
 
         {{-- Header --}}
         <div class="mb-8">
-            <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900">Shopping Cart</h1>
+            <h1 class="text-3xl sm:text-4xl font-semibold tracking-tight text-orange-600">Shopping Cart</h1>
             <p class="text-sm text-gray-500 mt-1">Check your items before checkout.</p>
         </div>
 
@@ -26,7 +26,7 @@
                 <p class="text-gray-500 text-sm mt-2">Browse products and add something you like.</p>
 
                 <a href="{{ route('products.index') }}"
-                   class="inline-flex items-center justify-center mt-6 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-3 rounded-lg transition">
+                   class="inline-flex items-center justify-center mt-6 bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-lg transition">
                     Shop products
                 </a>
             </div>
@@ -170,7 +170,7 @@
                         </div>
 
                         <a href="{{ route('checkout.index') }}"
-                           class="mt-6 w-full inline-flex items-center justify-center bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 rounded-lg transition">
+                           class="mt-6 w-full inline-flex items-center justify-center bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition">
                             Checkout
                         </a>
 
